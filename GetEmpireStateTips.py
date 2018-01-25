@@ -1,3 +1,9 @@
+'''
+This code calls the API using my client ID and secret and returns the tip
+text and sentiment from TextBlob. This code uses the Empire State Building
+venue on Foursquare
+'''
+
 import json
 import requests
 from textblob import TextBlob
