@@ -3,7 +3,7 @@ import requests
 from Venue import Venue
 
 
-def getvenues(clientId, clientSecret):
+def get_venues(clientId, clientSecret):
     url = 'https://api.foursquare.com/v2/venues/explore'
     params = dict(
         client_id=clientId,

@@ -6,7 +6,6 @@ venue on Foursquare
 
 import json
 import requests
-from textblob import TextBlob
 from Tip import Tip
 
 authorInteractionType = dict(
@@ -15,27 +14,28 @@ authorInteractionType = dict(
     disliked=-1
 )
 
-url = 'https://api.foursquare.com/v2/venues/4af5a46af964a520b5fa21e3/tips'
-params = dict(
-    client_id='TL23INJGO0B40GXYB040G1LXKSQ0JSP5IE010VTWTCHWZEQO',
-    client_secret='UYZWK4UKLKPG2OY54M4MCKMRGVDZJHGRP0OCE5UV44FQF1C5',
-    limit=500,
-    v=20180125
-)
 
-resp = requests.get(url=url, params=params)
-data = json.loads(resp.text)
+def get_tips(client_id, client_secret, venue_id):
 
-if data['meta']['code'] == 200:
-    tipList = []
-    tips = data['response']['tips']['items']
-    for tip in tips:
+    url = 'https://api.foursquare.com/v2/venues/' + venue_id + '/tips'
+    params = dict(
+        client_id=client_id,
+        client_secret=client_secret,
+        limit=500,
+        v=20180125
+    )
 
-        if "authorInteractionType" in tip:
-            tipText = tip['text']
-            authorRating = authorInteractionType[tip['authorInteractionType']]
-            tipSentiment = TextBlob(tipText).sentiment.polarity
-            newTip = Tip(tipText, 0, tipSentiment)
-            tipList.append(newTip)
+    resp = requests.get(url=url, params=params)
+    data = json.loads(resp.text)
+    tip_list = []
 
-print("tipList contains " + str(len(tipList)) + " tips.")
+    if data['meta']['code'] == 200:
+        tips = data['response']['tips']['items']
+        for tip in tips:
+            tip_text = tip['text']
+            tip_id = tip['id']
+            new_tip = Tip(tip_id, tip_text)
+            tip_list.append(new_tip)
+
+    print('found ' + str(len(tip_list)) + ' tips for ' + venue_id)
+    return tip_list
