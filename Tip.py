@@ -3,10 +3,4 @@ class Tip:
         self.id = tip_id
         self.text = tip_text
         self.sentiment = 0
-        self.rating = 0
-
-    def set_sentiment(self, sentiment):
-        self.sentiment = sentiment
-
-    def set_rating(self, rating):
-        self.rating = rating
+        self.rating = None

@@ -35,6 +35,8 @@ def get_tips(client_id, client_secret, venue_id):
             tip_text = tip['text']
             tip_id = tip['id']
             new_tip = Tip(tip_id, tip_text)
+            if "authorInteractionType" in tip:
+                new_tip.rating = authorInteractionType[tip["authorInteractionType"]]
             tip_list.append(new_tip)
 
     print('found ' + str(len(tip_list)) + ' tips for ' + venue_id)
