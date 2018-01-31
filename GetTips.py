@@ -7,9 +7,9 @@ venue on Foursquare
 import json
 import requests
 from textblob import TextBlob
+from Tip import Tip
 
-url = 'https://api.foursquare.com/v2/venues/43695300f964a5208c291fe3/tips'
-
+url = 'https://api.foursquare.com/v2/venues/4af5a46af964a520b5fa21e3/tips'
 params = dict(
     client_id='TL23INJGO0B40GXYB040G1LXKSQ0JSP5IE010VTWTCHWZEQO',
     client_secret='UYZWK4UKLKPG2OY54M4MCKMRGVDZJHGRP0OCE5UV44FQF1C5',
@@ -20,11 +20,14 @@ params = dict(
 resp = requests.get(url=url, params=params)
 data = json.loads(resp.text)
 
-response = data['response']
-tips = response['tips']
-items = tips['items']
-for tip in items:
-    tipText = tip['text']
-    tipBlob = TextBlob(tipText)
-    print(tipText + ": " + str(tipBlob.sentiment.polarity) + '\n')
+if data['meta']['code'] == 200:
+    tipList = []
+    tips = data['response']['tips']['items']
+    for tip in tips:
+        tipText = tip['text']
+        # get userInteraction??
+        tipSentiment = TextBlob(tipText).sentiment.polarity
+        newTip = Tip(tipText, 0, tipSentiment)
+        tipList.append(newTip)
 
+print("tipList contains " + str(len(tipList)) + " tips.")
