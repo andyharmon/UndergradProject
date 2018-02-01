@@ -13,8 +13,7 @@ def create_classification_file(rated_tips):
             # I need to look into how to handle "meh" ratings
             if tip.rating != 0:
                 try:
-                    tip_text = str(tip.text)
-                    tip_text = tip_text.strip(',')
+                    tip_text = str(tip.text).replace(',', '')
                     tb_class = classifciations[tip.rating]
                     text_file.write(tip_text + ',' + tb_class + '\n')
                 except UnicodeEncodeError:
@@ -24,7 +23,9 @@ def create_classification_file(rated_tips):
 
 def do_classification(text_file_name):
     with open(text_file_name) as tips:
+        print("beginning to classify")
         nb_classifier = NaiveBayesClassifier(tips, format="csv")
         prob_dist = nb_classifier.classify("I enjoyed the tacos")
-        print(str(prob_dist.max))
+        print(str(prob_dist))
+        print("done")
 
