@@ -1,13 +1,13 @@
-from textblob.classifiers import NaiveBayesClassifier, NLTKClassifier
-import datetime
+from textblob.classifiers import NaiveBayesClassifier, NLTKClassifier, DecisionTreeClassifier, MaxEntClassifier
+from datetime import datetime
 
 classifciations = dict([(1, "pos"), (-1, "neg")])
-nb_classifier = None
 
 
-def create_classification_file(rated_tips):
-    classification_time = datetime.datetime.now().strftime("%d%B%Y-%I-%M%p")
-    filename = "TextFiles/textfile-" + classification_time + ".csv"
+def create_classification_file(rated_tips, file_class):
+    generation_time = datetime.now().strftime("%d%B%Y-%I-%M%p")
+    filename = "TextFiles/" + file_class + "-" + generation_time + ".csv"
+    skipped_tips = 0
     with open(filename, "w") as text_file:
         for tip in rated_tips:
             # I need to look into how to handle "meh" ratings
@@ -17,15 +17,20 @@ def create_classification_file(rated_tips):
                     tb_class = classifciations[tip.rating]
                     text_file.write(tip_text + ',' + tb_class + '\n')
                 except UnicodeEncodeError:
-                    print("error found on tip with text: " + tip.text)
+                    skipped_tips = +1
+    print("skipped " + str(skipped_tips) + " tips!")
     return text_file
 
 
-def do_classification(text_file_name):
-    with open(text_file_name) as tips:
-        print("beginning to classify")
-        nb_classifier = NaiveBayesClassifier(tips, format="csv")
-        prob_dist = nb_classifier.classify("I enjoyed the tacos")
-        print(str(prob_dist))
-        print("done")
+def do_classification(train_file, test_file):
 
+    with open(train_file) as tips:
+        print(str(datetime.now().time()) + ": beginning to train")
+        nb_classifier = NaiveBayesClassifier(tips, format="csv")
+        print(str(datetime.now().time()) + ": training done")
+
+    with open(test_file) as tips:
+        print(str(datetime.now().time()) + ": beginning to test")
+        nb_accuracy = nb_classifier.accuracy(tips, format="csv")
+        print(str(datetime.now().time()) + ": testing done")
+        print("Naive Bayes accuracy: " + str(nb_accuracy))
