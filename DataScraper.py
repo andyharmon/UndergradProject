@@ -1,19 +1,34 @@
-from GetVenues import get_venues
-from GetTips import get_tips
+from TipScraper import scrape_tips
+from DoClassification import create_classification_file
+from datetime import datetime
 
-CLIENT_ID = 'TL23INJGO0B40GXYB040G1LXKSQ0JSP5IE010VTWTCHWZEQO'
-CLIENT_SECRET = 'UYZWK4UKLKPG2OY54M4MCKMRGVDZJHGRP0OCE5UV44FQF1C5'
+city_list = ["New York", "Los Angeles", "Chicago", "Houston", "Philadelphia", "Phoenix", "San Antonio",
+             "San Diego", "Dallas", "San Jose", "Austin", "Jacksonville", "San Francisco", "Indianapolis",
+             "Columbus", "Fort Worth", "Charlotte", "Detroit", "El Paso", "Seattle", "Denver", "Washington DC",
+             "Memphis", "Boston", "Nashville-Davidson", "Baltimore", "Oklahoma City", "Portland", "Las Vegas",
+             "Milwaukee", "Albuquerque", "Tucson", "Fresno", "Sacramento", "Long Beach", "Kansas City", "Mesa",
+             "Atlanta", "Virginia Beach", "Omaha", "Colorado Springs", "Raleigh", "Miami", "Minneapolis", "Oakland",
+             "Tulsa", "Cleveland", "Wichita", "New Orleans", "Arlington"]
 
+print(str(datetime.now().time()) + ": start!")
 
-def scrape_tips(city_list):
+tip_list = scrape_tips(city_list)
 
-    venue_list = get_venues(CLIENT_ID, CLIENT_SECRET, city_list)
-    tip_list = []
+tips_with_ratings = []
 
-    for venue in venue_list:
-        tip_list = tip_list + get_tips(CLIENT_ID, CLIENT_SECRET, venue.id)
+for tip in tip_list:
+    if tip.rating is not None:
+        tips_with_ratings.append(tip)
 
-    print('there are ' + str(len(tip_list)) + ' tips')
-    return tip_list
+print('there are ' + str(len(tips_with_ratings)) + ' tips for our total set')
 
+training_set = tips_with_ratings[:len(tips_with_ratings) / 2]
+testing_set = tips_with_ratings[len(tips_with_ratings) / 2:]
 
+train_file = create_classification_file(training_set, "training")
+test_file = create_classification_file(testing_set, "testing")
+
+print(train_file.name)
+print(test_file.name)
+
+print(str(datetime.now().time()) + ": done")

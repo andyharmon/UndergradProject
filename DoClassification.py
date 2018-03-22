@@ -1,4 +1,4 @@
-from textblob.classifiers import NaiveBayesClassifier, NLTKClassifier, DecisionTreeClassifier, MaxEntClassifier
+from textblob.classifiers import NaiveBayesClassifier, DecisionTreeClassifier, MaxEntClassifier
 from datetime import datetime
 
 classifciations = dict([(1, "pos"), (-1, "neg")])
