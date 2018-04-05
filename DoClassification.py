@@ -10,7 +10,6 @@ def create_classification_file(rated_tips, file_class):
     skipped_tips = 0
     with open(filename, "w") as text_file:
         for tip in rated_tips:
-            # I need to look into how to handle "meh" ratings
             if tip.rating != 0:
                 try:
                     tip_text = str(tip.text).replace(',', '')
@@ -27,10 +26,17 @@ def do_classification(train_file, test_file):
     with open(train_file) as tips:
         print(str(datetime.now().time()) + ": beginning to train")
         nb_classifier = NaiveBayesClassifier(tips, format="csv")
+        dt_classifier = DecisionTreeClassifier(tips, format="csv")
+        me_classifier = MaxEntClassifier(tips, format="csv")
         print(str(datetime.now().time()) + ": training done")
 
     with open(test_file) as tips:
         print(str(datetime.now().time()) + ": beginning to test")
         nb_accuracy = nb_classifier.accuracy(tips, format="csv")
+        dt_accuracy = dt_classifier.accuracy(tips, format="csv")
+        me_accuracy = me_classifier.accuracy(tips, format="csv")
+
         print(str(datetime.now().time()) + ": testing done")
         print("Naive Bayes accuracy: " + str(nb_accuracy))
+        print("Decision Tree accuracy: " + str(dt_accuracy))
+        print("Maximum Entropy accuracy: " + str(me_accuracy))
