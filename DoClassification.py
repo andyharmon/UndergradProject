@@ -1,7 +1,7 @@
 from textblob.classifiers import NaiveBayesClassifier, DecisionTreeClassifier, MaxEntClassifier
 from datetime import datetime
 
-classifciations = dict([(1, "pos"), (-1, "neg")])
+classifications = dict([(1, "pos"), (-1, "neg")])
 
 
 def create_classification_file(rated_tips, file_class):
@@ -13,7 +13,7 @@ def create_classification_file(rated_tips, file_class):
             if tip.rating != 0:
                 try:
                     tip_text = str(tip.text).replace(',', '')
-                    tb_class = classifciations[tip.rating]
+                    tb_class = classifications[tip.rating]
                     text_file.write(tip_text + ',' + tb_class + '\n')
                 except UnicodeEncodeError:
                     skipped_tips = +1
@@ -35,8 +35,16 @@ def do_classification(train_file, test_file):
         nb_accuracy = nb_classifier.accuracy(tips, format="csv")
         dt_accuracy = dt_classifier.accuracy(tips, format="csv")
         me_accuracy = me_classifier.accuracy(tips, format="csv")
-
         print(str(datetime.now().time()) + ": testing done")
+
+        generation_time = datetime.now().strftime("%d%B%Y-%I-%M%p")
+        filename = "Outputs/" + generation_time + ".txt"
+
+        with open(filename, "w") as output_file:
+            output_file.write("Naive Bayes accuracy: " + str(nb_accuracy) + '\n')
+            output_file.write("Decision Tree accuracy: " + str(dt_accuracy) + '\n')
+            output_file.write("Maximum Entropy accuracy: " + str(me_accuracy) + '\n')
+
         print("Naive Bayes accuracy: " + str(nb_accuracy))
         print("Decision Tree accuracy: " + str(dt_accuracy))
         print("Maximum Entropy accuracy: " + str(me_accuracy))
