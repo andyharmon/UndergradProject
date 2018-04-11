@@ -22,16 +22,8 @@ for tip in tip_list:
 
 print('there are ' + str(len(tips_with_ratings)) + ' tips for our total set')
 
-positive_tips = get_positive_tips(tips_with_ratings)
-negative_tips = get_negative_tips(tips_with_ratings)
+data_file = create_classification_file(tips_with_ratings, "data")
 
-training_set = (positive_tips[:len(positive_tips) / 2] + negative_tips[:len(negative_tips) / 2])
-testing_set = (positive_tips[len(positive_tips) / 2:] + negative_tips[len(negative_tips) / 2:])
-
-train_file = create_classification_file(training_set, "training")
-test_file = create_classification_file(testing_set, "testing")
-
-print(train_file.name)
-print(test_file.name)
+print(data_file.name)
 
 print(str(datetime.now().time()) + ": done")

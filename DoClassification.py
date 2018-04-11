@@ -1,5 +1,6 @@
-from textblob.classifiers import NaiveBayesClassifier, DecisionTreeClassifier, MaxEntClassifier
 from datetime import datetime
+import csv
+import nltk
 
 classifications = dict([(1, "pos"), (-1, "neg")])
 
@@ -21,30 +22,65 @@ def create_classification_file(rated_tips, file_class):
     return text_file
 
 
-def do_classification(train_file, test_file):
+def document(tips_file):
+    with open(tips_file, 'rb') as f:
+        reader = csv.reader(f)
+        reader_output = map(tuple, reader)
 
-    with open(train_file) as tips:
-        print(str(datetime.now().time()) + ": beginning to train")
-        nb_classifier = NaiveBayesClassifier(tips, format="csv")
-        dt_classifier = DecisionTreeClassifier(tips, format="csv")
-        me_classifier = MaxEntClassifier(tips, format="csv")
-        print(str(datetime.now().time()) + ": training done")
+    document_list = list()
 
-    with open(test_file) as tips:
-        print(str(datetime.now().time()) + ": beginning to test")
-        nb_accuracy = nb_classifier.accuracy(tips, format="csv")
-        dt_accuracy = dt_classifier.accuracy(tips, format="csv")
-        me_accuracy = me_classifier.accuracy(tips, format="csv")
-        print(str(datetime.now().time()) + ": testing done")
+    for item in reader_output:
+        document_list.append((item[0].split(' '), item[1]))
 
-        generation_time = datetime.now().strftime("%d%B%Y-%I-%M%p")
-        filename = "Outputs/" + generation_time + ".txt"
+    return document_list
 
-        with open(filename, "w") as output_file:
-            output_file.write("Naive Bayes accuracy: " + str(nb_accuracy) + '\n')
-            output_file.write("Decision Tree accuracy: " + str(dt_accuracy) + '\n')
-            output_file.write("Maximum Entropy accuracy: " + str(me_accuracy) + '\n')
 
-        print("Naive Bayes accuracy: " + str(nb_accuracy))
-        print("Decision Tree accuracy: " + str(dt_accuracy))
-        print("Maximum Entropy accuracy: " + str(me_accuracy))
+def tokenize_document(document):
+    document_string = ""
+    for item in document:
+        document_string += str(item[0])
+
+    return nltk.tokenize.word_tokenize(document_string)
+
+
+def document_features(document, word_features):
+    document_words = set(document)
+    features = {}
+    for word in word_features:
+        features['contains{}'.format(word)] = (word in document_words)
+    return features
+
+
+def do_classification(data_file):
+
+    print("creating document file")
+    data_document = document(data_file)
+
+    print("creating document feature set")
+    data_tokens = tokenize_document(data_document)
+    all_training_words = nltk.FreqDist(w.lower() for w in data_tokens)
+    word_features = list(all_training_words)[:2000]
+    featureset = [(document_features(d, word_features), c) for (d, c) in data_document]
+
+    print("creating training and testing set")
+    train_set, test_set = featureset[:len(data_document) / 2], featureset[len(data_document) / 2:]
+
+    print("beginning training")
+    print("Naive Bayes")
+    nb_classifier = nltk.NaiveBayesClassifier.train(train_set)
+    print("Decision Tree")
+    dt_classifier = nltk.DecisionTreeClassifier.train(train_set)
+    print("Max Entropy")
+    me_classifier = nltk.MaxentClassifier.train(train_set)
+
+    print("beginning testing")
+    generation_time = datetime.now().strftime("%d%B%Y-%I-%M%p")
+    filename = "Outputs/" + generation_time + ".txt"
+
+    with open(filename, "w") as output_file:
+        output_file.write("Naive Bayes accuracy: " + str(nltk.classify.accuracy(nb_classifier, test_set)) + '\n')
+        output_file.write("Decision Tree accuracy: " + str(nltk.classify.accuracy(dt_classifier, test_set)) + '\n')
+        print(dt_classifier.pseudocode())
+        output_file.write("Maximum Entropy accuracy: " + str(nltk.classify.accuracy(me_classifier, test_set)) + '\n')
+
+    print("done!")
