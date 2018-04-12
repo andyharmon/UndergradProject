@@ -71,16 +71,19 @@ def do_classification(data_file):
     print("Decision Tree")
     dt_classifier = nltk.DecisionTreeClassifier.train(train_set)
     print("Max Entropy")
-    me_classifier = nltk.MaxentClassifier.train(train_set)
+    me_classifier = nltk.MaxentClassifier.train(train_set, algorithm="gis", max_iter=10)
 
     print("beginning testing")
     generation_time = datetime.now().strftime("%d%B%Y-%I-%M%p")
     filename = "Outputs/" + generation_time + ".txt"
 
+    nb_accuracy = nltk.classify.accuracy(nb_classifier, test_set)
+    dt_accuracy = nltk.classify.accuracy(dt_classifier, test_set)
+    me_accuracy = nltk.classify.accuracy(me_classifier, test_set)
+
     with open(filename, "w") as output_file:
-        output_file.write("Naive Bayes accuracy: " + str(nltk.classify.accuracy(nb_classifier, test_set)) + '\n')
-        output_file.write("Decision Tree accuracy: " + str(nltk.classify.accuracy(dt_classifier, test_set)) + '\n')
-        print(dt_classifier.pseudocode())
-        output_file.write("Maximum Entropy accuracy: " + str(nltk.classify.accuracy(me_classifier, test_set)) + '\n')
+        output_file.write("Naive Bayes accuracy: " + str(nb_accuracy) + '\n')
+        output_file.write("Decision Tree accuracy: " + str(dt_accuracy) + '\n')
+        output_file.write("Maximum Entropy accuracy: " + str(me_accuracy) + '\n')
 
     print("done!")
