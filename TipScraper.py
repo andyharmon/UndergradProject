@@ -16,20 +16,3 @@ def scrape_tips(city_list):
     print('there are ' + str(len(tip_list)) + ' tips')
     return tip_list
 
-
-def get_positive_tips(tip_list):
-    positive_tips = []
-    for tip in tip_list:
-        if tip.rating == 1:
-            positive_tips.append(tip)
-    return positive_tips
-
-
-def get_negative_tips(tip_list):
-    negative_tips = []
-    for tip in tip_list:
-        if tip.rating == -1:
-            negative_tips.append(tip)
-    return negative_tips
-
-

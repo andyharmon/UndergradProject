@@ -1,4 +1,4 @@
-from TipScraper import scrape_tips, get_positive_tips, get_negative_tips
+from TipScraper import scrape_tips
 from DoClassification import create_classification_file
 from datetime import datetime
 
