@@ -2,24 +2,6 @@ from datetime import datetime
 import csv
 import nltk
 
-classifications = dict([(1, "pos"), (-1, "neg"), (0, "meh")])
-
-
-def create_classification_file(rated_tips, file_class):
-    generation_time = datetime.now().strftime("%d%B%Y-%I-%M%p")
-    filename = "TextFiles/" + file_class + "-" + generation_time + ".csv"
-    skipped_tips = 0
-    with open(filename, "w") as text_file:
-        for tip in rated_tips:
-            try:
-                tip_text = str(tip.text).replace(',', '')
-                tb_class = classifications[tip.rating]
-                text_file.write(tip_text + ',' + tb_class + '\n')
-            except UnicodeEncodeError:
-                skipped_tips = +1
-    print("skipped " + str(skipped_tips) + " tips!")
-    return text_file
-
 
 def document(tips_file):
     with open(tips_file, 'rb') as f:
@@ -62,7 +44,7 @@ def do_classification(data_file):
     feature_set = [(document_features(d, word_features), c) for (d, c) in data_document]
 
     print("creating training and testing set")
-    test_set, train_set = feature_set[:len(data_document) / 4], feature_set[len(data_document) / 4:]
+    test_set, train_set = feature_set[:len(data_document) / 2], feature_set[len(data_document) / 2:]
 
     print("beginning training")
     print("Naive Bayes")
