@@ -1,7 +1,6 @@
-# Andy Harmon - 14012988
-# School of Computing, Mathematics and Digital Technology
+# Andy Harmon - 14012988 - School of Computing, Mathematics and Digital Technology
 
-# Program Instructions
+## Program Instructions
 This program consists of three components:
 
 * A program that scrapes the Foursqaure API - This can be run from `DataScraper.py`
