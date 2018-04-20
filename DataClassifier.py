@@ -8,6 +8,8 @@ root.withdraw()
 
 data_file_name = askopenfilename(title="Select data File")
 
+root.destroy()
+
 try:
     do_classification(data_file_name)
     print(str(datetime.now().time()) + ": done")

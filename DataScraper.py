@@ -13,8 +13,6 @@ city_list = ["New York", "Los Angeles", "Chicago", "Houston", "Philadelphia", "P
              "Atlanta", "Virginia Beach", "Omaha", "Colorado Springs", "Raleigh", "Miami", "Minneapolis", "Oakland",
              "Tulsa", "Cleveland", "Wichita", "New Orleans", "Arlington"]
 
-nyc = ["nyc"]
-
 authorInteractionType = dict(
     liked=1,
     meh=0,
@@ -118,7 +116,7 @@ def create_classification_file(rated_tips, file_class):
 
 
 print(str(datetime.now().time()) + ": start!")
-tip_list = scrape_tips(nyc)
+tip_list = scrape_tips(city_list)
 tips_with_ratings = []
 
 for tip in tip_list:

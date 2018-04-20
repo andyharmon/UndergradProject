@@ -49,10 +49,13 @@ def do_classification(data_file):
     print("beginning training")
     print("Naive Bayes")
     nb_classifier = nltk.NaiveBayesClassifier.train(train_set)
+    nb_classifier.show_most_informative_features(10)
     print("Decision Tree")
     dt_classifier = nltk.DecisionTreeClassifier.train(train_set)
+    print(dt_classifier.pseudocode())
     print("Max Entropy")
     me_classifier = nltk.MaxentClassifier.train(train_set, algorithm="gis", max_iter=10)
+    me_classifier.show_most_informative_features(10)
 
     print("beginning testing")
     generation_time = datetime.now().strftime("%d%B%Y-%I-%M%p")
@@ -61,9 +64,6 @@ def do_classification(data_file):
     nb_accuracy = nltk.classify.accuracy(nb_classifier, test_set)
     dt_accuracy = nltk.classify.accuracy(dt_classifier, test_set)
     me_accuracy = nltk.classify.accuracy(me_classifier, test_set)
-
-    nb_classifier.show_most_informative_features(5)
-    me_classifier.show_most_informative_features(5)
 
     with open(filename, "w") as output_file:
         output_file.write("Naive Bayes accuracy: " + str(nb_accuracy) + '\n')
