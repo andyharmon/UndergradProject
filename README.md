@@ -1,4 +1,4 @@
-# Andy Harmon - 14012988 - School of Computing, Mathematics and Digital Technology
+# Andy Harmon - School of Computing, Mathematics and Digital Technology
 
 ## Program Instructions
 This program consists of three components:
